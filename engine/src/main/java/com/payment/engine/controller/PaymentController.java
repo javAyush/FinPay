@@ -19,8 +19,10 @@ public class PaymentController {
 
     @PostMapping
     public ResponseEntity<PaymentResponse> authorizePayment(
+            @RequestHeader("Idempotency Key") String idempotency_key,
             @Valid @RequestBody PaymentRequest request){
-       return ResponseEntity.status(HttpStatus.ACCEPTED).body(paymentService.authorize(request));
+       return ResponseEntity.status(HttpStatus.ACCEPTED)
+               .body(paymentService.authorize(idempotency_key,request));
     }
 
     @GetMapping("/{transactionId}")

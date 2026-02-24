@@ -7,7 +7,7 @@ import com.payment.engine.entity.Transaction;
 
 public interface PaymentService {
 
-     PaymentResponse authorize(PaymentRequest request);
+     PaymentResponse authorize(String idempotency_key, PaymentRequest request);
 
      Transaction getTransaction(String transactionId);
 }
