@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 @Table(name = "Ledger_Entries")
 @Getter
 @Setter
+@AllArgsConstructor
+@RequiredArgsConstructor
 @Builder
 public class LedgerEntry {
 

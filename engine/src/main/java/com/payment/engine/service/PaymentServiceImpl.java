@@ -10,6 +10,7 @@ import com.payment.engine.service.interfaces.AccountService;
 import com.payment.engine.service.interfaces.PaymentService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
@@ -21,6 +22,7 @@ import java.util.UUID;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class PaymentServiceImpl implements PaymentService {
 
     private final AccountService accountService;
@@ -33,8 +35,11 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public PaymentResponse authorize(String idempotency_key, PaymentRequest request) {
         Account account = accountService.getAccountOrThrow(request.getAccountId());
+        String transactionId = UUID.randomUUID().toString();
         //check if already transaction present from this key
-        Optional<Idempotency> existingKey = idempotentRepository.findByIdempotency(idempotency_key);
+        Optional<Idempotency> existingKey = idempotentRepository.findByIdempotencyKey(idempotency_key);
+
+        log.info(String.valueOf(existingKey));
         if(existingKey.isPresent()){
             try{
                 return objectMapper.readValue(
@@ -49,12 +54,16 @@ public class PaymentServiceImpl implements PaymentService {
 
         // check if account balance is lesser that amount to be deducted
         if(account.getBalance().compareTo(request.getAmount())<0){
-            throw new RuntimeException("Account balance is insufficient");
+            return new PaymentResponse(
+                    transactionId,
+                    PaymentStatus.INSUFFICIENT_BALANCE,
+                    account.getBalance()
+            );
         }
         //set Balance
         account.setBalance(account.getBalance() - request.getAmount());
 
-        String transactionId = UUID.randomUUID().toString();
+
 
         Transaction transaction = Transaction.builder()
                 .id(transactionId)
@@ -90,17 +99,13 @@ public class PaymentServiceImpl implements PaymentService {
                 .build();
         idempotentRepository.save(idempotency);
 
-        return PaymentResponse.builder()
-                .transactionId(transactionId)
-                .status(PaymentStatus.AUTHORIZED)
-                .remainingBalance(transaction.getAmount())
-                .build();
+        return response;
 
     }catch(ObjectOptimisticLockingFailureException o){
             throw new RuntimeException("Concurrent Update detected");
         }
         catch (Exception e){
-            throw new RuntimeException("Payment Processing Failed");
+            throw new RuntimeException("Payment Processing Failed",e);
         }
     }
 

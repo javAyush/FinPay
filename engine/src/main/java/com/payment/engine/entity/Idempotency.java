@@ -1,6 +1,7 @@
 package com.payment.engine.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,13 +10,14 @@ import lombok.RequiredArgsConstructor;
 @Entity
 @Table(name = "Idempotent_Keys")
 @Builder
+@AllArgsConstructor
 @RequiredArgsConstructor
 @Getter
 public class Idempotency {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private Long id;
 
     @Column(name = "idempotency_key", nullable = false, unique = true)
     private String idempotencyKey;
