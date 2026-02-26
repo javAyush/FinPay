@@ -1,7 +1,10 @@
 package com.payment.engine.service;
 
+import com.payment.engine.Dto.FraudRequest;
+import com.payment.engine.Dto.FraudResponse;
 import com.payment.engine.Dto.PaymentRequest;
 import com.payment.engine.Dto.PaymentResponse;
+import com.payment.engine.config.FraudClient;
 import com.payment.engine.entity.*;
 import com.payment.engine.repository.IdempotentRepository;
 import com.payment.engine.repository.LedgerEntryRepository;
@@ -13,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import tools.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
@@ -30,6 +34,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final LedgerEntryRepository ledgerEntryRepository;
     private final IdempotentRepository idempotentRepository;
     private final ObjectMapper objectMapper;
+    private final FraudClient fraudClient;
 
     @Override
     @Transactional
@@ -59,6 +64,14 @@ public class PaymentServiceImpl implements PaymentService {
                     PaymentStatus.INSUFFICIENT_BALANCE,
                     account.getBalance()
             );
+        }
+        //checking if its not fraud
+        FraudResponse fraudResponse = fraudClient.checkFraud(
+                new FraudRequest(request.getAccountId(), request.getAmount())
+        );
+
+        if (fraudResponse.isFraudStatus()) {
+            throw new RuntimeException("Transaction flagged as fraud");
         }
         //set Balance
         account.setBalance(account.getBalance() - request.getAmount());

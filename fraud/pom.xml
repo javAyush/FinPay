@@ -11,8 +11,8 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>fraud</artifactId>
-	<name>fraud</name>
+	<artifactId>fraud-service</artifactId>
+	<name>fraud-service</name>
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -29,10 +29,9 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
-		<!-- Actuator (Optional but recommended for microservices) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 
 		<!-- Lombok (Optional but helpful) -->
