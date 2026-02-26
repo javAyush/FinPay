@@ -15,6 +15,7 @@
 
 	<modules>
 		<module>engine</module>
+		<module>fraud</module>
 	</modules>
 
 	<properties>
