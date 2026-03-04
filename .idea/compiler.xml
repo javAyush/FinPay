@@ -7,10 +7,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="fraud-service" />
+        <module name="api-gateway" />
         <module name="engine" />
-        <module name="fraud" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="fraud" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

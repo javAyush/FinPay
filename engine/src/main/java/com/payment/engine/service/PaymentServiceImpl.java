@@ -65,7 +65,7 @@ public class PaymentServiceImpl implements PaymentService {
                     account.getBalance()
             );
         }
-        //checking if its not fraud
+        //checking if it is not fraud
         FraudResponse fraudResponse = fraudClient.checkFraud(
                 new FraudRequest(request.getAccountId(), request.getAmount())
         );

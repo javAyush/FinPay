@@ -7,3 +7,4 @@ resilience4j:
         waitDurationInOpenState: 10s
         permittedNumberOfCallsInHalfOpenState: 3
         minimumNumberOfCalls: 5
+
