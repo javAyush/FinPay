@@ -31,4 +31,9 @@ public class PaymentController {
     ){
         return ResponseEntity.ok(paymentService.getTransaction(transactionId));
     }
+
+    @GetMapping("/test")
+    public String test() {
+        return "Payment Service Working";
+    }
 }

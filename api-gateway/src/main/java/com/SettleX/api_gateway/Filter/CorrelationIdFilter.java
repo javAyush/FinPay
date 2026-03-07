@@ -1,24 +1,39 @@
-package com.SettleX.api_gateway.Filter;
-
-import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
-
-import java.util.UUID;
-
-public class CorrelationIdFilter implements GlobalFilter {
-    @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-
-        String correlationId = UUID.randomUUID().toString();
-
-        ServerHttpRequest mutatedRequest = exchange.getRequest()
-                .mutate()
-                .header("X-Correlation-Id", correlationId)
-                .build();
-
-        return chain.filter(exchange.mutate().request(mutatedRequest).build());
-    }
-}
+//package com.SettleX.api_gateway.Filter;
+//
+//import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+//import org.springframework.cloud.gateway.filter.GlobalFilter;
+//import org.springframework.http.server.reactive.ServerHttpRequest;
+//import org.springframework.stereotype.Component;
+//import org.springframework.web.server.ServerWebExchange;
+//import reactor.core.publisher.Mono;
+//
+//import java.util.UUID;
+//
+//@Component
+//public class CorrelationIdFilter implements GlobalFilter {
+//
+//    @Override
+//    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+//
+//        String correlationId = exchange.getRequest()
+//                .getHeaders()
+//                .getFirst("X-Correlation-ID");
+//
+//        if (correlationId == null) {
+//            correlationId = UUID.randomUUID().toString();
+//        }
+//
+//        ServerHttpRequest request = exchange.getRequest()
+//                .mutate()
+//                .header("X-Correlation-ID", correlationId)
+//                .build();
+//
+//        ServerWebExchange mutatedExchange = exchange.mutate()
+//                .request(request)
+//                .build();
+//
+//        return chain.filter(mutatedExchange);
+//    }
+//}
+//
+//
